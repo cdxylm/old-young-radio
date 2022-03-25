@@ -1,6 +1,6 @@
-package org.jetbrains.plugins.template.services
+package com.github.cdxylm.oldyoungradio.services
 
-import org.jetbrains.plugins.template.MyBundle
+import com.github.cdxylm.oldyoungradio.MyBundle
 
 class MyApplicationService {
 
