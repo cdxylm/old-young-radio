@@ -14,6 +14,8 @@ plugins {
     id("org.jetbrains.changelog") version "1.3.1"
     // Gradle Qodana Plugin
     id("org.jetbrains.qodana") version "0.1.13"
+    // KSP
+    id("com.google.devtools.ksp").version("1.6.10-1.0.4")
 }
 
 group = properties("pluginGroup")
@@ -22,6 +24,15 @@ version = properties("pluginVersion")
 // Configure project's dependencies
 repositories {
     mavenCentral()
+}
+
+
+dependencies {
+    implementation("com.squareup.moshi:moshi:1.13.0")
+    ksp("com.squareup.moshi:moshi-kotlin-codegen:1.13.0")
+    // https://mvnrepository.com/artifact/uk.co.caprica/vlcj
+    implementation("uk.co.caprica:vlcj:4.7.2")
+//    implementation("org.jetbrains:marketplace-zip-signer:0.1.8")
 }
 
 // Configure Gradle IntelliJ Plugin - read more: https://github.com/JetBrains/gradle-intellij-plugin
@@ -100,8 +111,10 @@ tasks {
     }
 
     signPlugin {
-        certificateChain.set(System.getenv("CERTIFICATE_CHAIN"))
-        privateKey.set(System.getenv("PRIVATE_KEY"))
+//        certificateChain.set(System.getenv("CERTIFICATE_CHAIN"))
+//        privateKey.set(System.getenv("PRIVATE_KEY"))
+        certificateChain.set(File(System.getenv("CERTIFICATE_CHAIN") ?: "./.keys/chain.crt").readText(Charsets.UTF_8))
+        privateKey.set(File(System.getenv("PRIVATE_KEY") ?: "./.keys/private.pem").readText(Charsets.UTF_8))
         password.set(System.getenv("PRIVATE_KEY_PASSWORD"))
     }
 

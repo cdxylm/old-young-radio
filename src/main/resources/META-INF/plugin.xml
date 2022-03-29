@@ -1,18 +1,23 @@
 <!-- Plugin Configuration File. Read more: https://plugins.jetbrains.com/docs/intellij/plugin-configuration-file.html -->
 <idea-plugin>
-    <id>com.github.cdxylm.oldyoungradio</id>
-    <name>old-young-radio</name>
-    <vendor>cdxylm</vendor>
+    <id>me.aguo.plugin.oldyoungradio</id>
+    <name>Old-Young-Radio</name>
+    <vendor email="support@aguo.me" url="https://aguo.me">Aguo</vendor>
 
     <depends>com.intellij.modules.platform</depends>
 
     <extensions defaultExtensionNs="com.intellij">
-        <applicationService serviceImplementation="com.github.cdxylm.oldyoungradio.services.MyApplicationService"/>
-        <projectService serviceImplementation="com.github.cdxylm.oldyoungradio.services.MyProjectService"/>
+        <notificationGroup displayType="BALLOON" id="API RESPONSE"/>
+        <notificationGroup displayType="BALLOON" id="Old Young Radio"/>
+        <applicationService serviceImplementation="me.aguo.plugin.oldyoungradio.service.RoomsService"/>
+        <applicationService serviceImplementation="me.aguo.plugin.oldyoungradio.service.StatusService"/>
+        <applicationService serviceImplementation="me.aguo.plugin.oldyoungradio.service.PlayerService"/>
+        <toolWindow factoryClass="me.aguo.plugin.oldyoungradio.ui.ToolWindow" id="Radio" canCloseContents="false"
+                    anchor="left" icon="me.aguo.plugin.oldyoungradio.ui.PluginIcons.mainIcon">
+        </toolWindow>
+        <statusBarWidgetFactory implementation="me.aguo.plugin.oldyoungradio.ui.MyCustomStatusBarWidgetFactory"/>
     </extensions>
 
     <applicationListeners>
-        <listener class="com.github.cdxylm.oldyoungradio.listeners.MyProjectManagerListener"
-                  topic="com.intellij.openapi.project.ProjectManagerListener"/>
     </applicationListeners>
 </idea-plugin>
