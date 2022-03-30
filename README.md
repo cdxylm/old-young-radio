@@ -44,6 +44,9 @@ Select the room item in Radio Tool Window.
 Then the "Remove room" button <img src="https://img.icons8.com/material-rounded/16/000000/minus.png"> is available.
 Click it.
 
+##### Refresh rooms' status manually:
+Click the "Refresh" button <img src="https://img.icons8.com/ios-glyphs/16/000000/refresh--v1.png">
+
 ##### Play:
 Double-click the room item which it's online(the item icon is green.)
 
