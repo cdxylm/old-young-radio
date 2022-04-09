@@ -109,7 +109,11 @@ object BiliBiliApi {
             .build()
 
         val response = client.send(request, HttpResponse.BodyHandlers.ofString())
-        if (response.body().indexOf("message\":\"0") != -1) {
+        if (response.body().indexOf("message\":\"0") != -1
+            && response.body().indexOf("live_status\":1") != -1
+        ) {
+            //Sometimes the status in panel doesn't update in time
+            //When the room is offline, the api response->message is also "0" and playurl_info is null, so need check it status again.
             val jsonAdapter = moshi.adapter(StreamUrlResponseV2::class.java)
             val streamUrlsResponseV2 = jsonAdapter.fromJson(response.body())
             return parseUrls(streamUrlsResponseV2)

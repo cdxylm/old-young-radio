@@ -4,7 +4,7 @@
     <name>Old-Young-Radio</name>
     <vendor email="support@aguo.me" url="https://aguo.me">Aguo</vendor>
 
-<!--    <depends>com.intellij.modules.platform</depends>-->
+    <depends>com.intellij.modules.platform</depends>
 
     <extensions defaultExtensionNs="com.intellij">
         <notificationGroup displayType="BALLOON" id="API RESPONSE"/>

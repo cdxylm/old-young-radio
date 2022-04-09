@@ -56,7 +56,7 @@ class CustomMouseAdapter(private val tabId: Int) : MouseAdapter() {
             popupMenu.show(list, e.x, e.y)
         }
         if (e.clickCount == 2 && e.mouseButton == MouseButton.Left) {
-            if ((list.selectedValue as RoomModel).live_status == 2) {
+            if ((list.selectedValue as RoomModel).live_status != 1) {
                 @Suppress("DialogTitleCapitalization")
                 val notification = Notification(
                     "Old Young Radio",
