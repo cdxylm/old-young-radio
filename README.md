@@ -67,9 +67,11 @@ Click the button.
 
 #### 使用：
 
-点击AddRoom <img src="https://img.icons8.com/external-tanah-basah-glyph-tanah-basah/16/000000/external-plus-user-interface-tanah-basah-glyph-tanah-basah-2.png"> 输入房间号（支持短号，如英雄联盟赛事房间号7734200，短号为6）订阅房间。房间号可批量输入，用中英文逗号隔开即可。<br>
+点击AddRoom <img src="https://img.icons8.com/external-tanah-basah-glyph-tanah-basah/16/000000/external-plus-user-interface-tanah-basah-glyph-tanah-basah-2.png"> 输入房间号（支持短号，如英雄联盟赛事房间号7734200，短号为6）订阅房间。房间号可批量输入，用中英文逗号隔开即可。
+也支持复制用户主页链接，从关注列表中导入（需要公开关注列表，默认是公开的；只能获取前5页的信息。）<br>
+也可以从热门面板右键订阅。
 
-点击RemoveRoom <img src="https://img.icons8.com/material-rounded/16/000000/minus.png"> <img> 删除房间。<br>
+点击RemoveRoom <img src="https://img.icons8.com/material-rounded/16/000000/minus.png"> 删除房间。<br>
 
 点击 Refresh <img src="https://img.icons8.com/ios-glyphs/16/000000/refresh--v1.png"> 手动刷新房间状态。<br>
 
@@ -78,7 +80,7 @@ Click the button.
 点击 Stop <img src="https://img.icons8.com/office/16/000000/stop.png"> 停止播放。
 
 
-默认每10秒刷新一次房间状态，目前无法自定义间隔。
+默认每10秒刷新一次已订阅的房间状态，目前无法自定义间隔。
 
 
 <!-- Plugin description end -->

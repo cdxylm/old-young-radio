@@ -4,6 +4,23 @@
 
 ## [Unreleased]
 
+## [0.0.2]
+### Added
+English:
+- [x] load rooms from followings
+- [x] add hot rooms panel
+
+中文：
+- [x] 从关注列表导入直播间
+- [x] 新增各个频道热门直播间面板，右键选择可以订阅，默认不会主动刷新当前选择频道的热门直播间，从已订阅面板跳转到热门面板时会主动刷新当前选择频道的热门直播间。
+
+### Fixed
+English:
+- [x] Online reminder doesn't work
+- 
+中文：
+- [x] 主播上线提醒不生效的问题
+
 ## [0.0.1]
 ### Added
 
@@ -18,4 +35,3 @@ English:
 - [x] 刷新、增加、删除房间
 - [x] 播放、停止
 - [x] 开播提醒
-

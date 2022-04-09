@@ -1,12 +1,14 @@
 package me.aguo.plugin.oldyoungradio.service
 
+import com.intellij.notification.Notification
+import com.intellij.notification.NotificationType
+import com.intellij.notification.Notifications
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.util.Disposer
 import com.intellij.util.concurrency.EdtExecutorService
 import me.aguo.plugin.oldyoungradio.PLAYING_ROOM
-import me.aguo.plugin.oldyoungradio.SELECTED_ROOM
 import me.aguo.plugin.oldyoungradio.model.RoomModel
 import uk.co.caprica.vlcj.factory.MediaPlayerFactory
 import uk.co.caprica.vlcj.player.base.State
@@ -65,12 +67,25 @@ class PlayerService : Disposable {
         return myPlayer.mediaPlayer().status().state()
     }
 
-    fun playVlc(urls: List<String>) {
-        if (SELECTED_ROOM.room_id != -99) {
-            for (i in urls) {
-                if (i.indexOf("gotcha03") != -1) {
-                    instance.getPlayer().mediaPlayer().media().play(i)
-                }
+    fun playVlc(urls: List<String>, room: RoomModel) {
+        val suitableUrl = urls.filter {
+            it.indexOf("gotcha03") != -1
+        }
+        if (suitableUrl.isEmpty()) {
+            @Suppress("DialogTitleCapitalization")
+            val notification = Notification(
+                "Old Young Radio",
+                "播放错误",
+                "没有找到合适的播放流",
+                NotificationType.WARNING
+            )
+            Notifications.Bus.notify(notification)
+            return
+        }
+        for (i in suitableUrl) {
+            if (i.indexOf("gotcha03") != -1) {
+                instance.getPlayer().mediaPlayer().media().play(i)
+                PLAYING_ROOM = room
             }
         }
     }

@@ -36,7 +36,8 @@ class StatusService : Disposable {
         var tempRooms = BiliBiliApi.getStatusInfoByUids(getAllIds("uid") as List<Int>)
         if (tempRooms.toSet() != TOOL_WINDOW_ROOMS.toList().toSet()) {
             logger.info("Rooms' status changed.")
-            val lastOffline = TOOL_WINDOW_ROOMS.toList().filter { it.live_status == 2 }
+
+            val lastOffline = TOOL_WINDOW_ROOMS.toList().filter { it.live_status != 1 }
                 .toSet()
 
             val currentOnline = tempRooms.filter { it?.live_status == 1 }

@@ -8,6 +8,6 @@ val TOOL_WINDOW_ROOMS = CollectionListModel<RoomModel>()
 var SELECTED_ROOM = RoomModel(-99, -99, -99, "", "", 2)
 var PLAYING_ROOM = RoomModel(-99, -99, -99, "", "", 2)
 var CURRENT_STREAM_URLS = listOf<String>()
-
-
+var CURRENT_CHANNEL = Channels.CHANNEL_ALL
+val CHANNEL_TAB_ROOMS = CollectionListModel<RoomModel>()
 

@@ -7,7 +7,7 @@ import me.aguo.plugin.oldyoungradio.model.RoomModel
 import javax.swing.JList
 
 
-class CustomRenderer : ColoredListCellRenderer<RoomModel>() {
+class CustomRenderer(private val tabId: Int) : ColoredListCellRenderer<RoomModel>() {
     private val logger = Logger.getInstance(CustomRenderer::class.java)
     override fun customizeCellRenderer(
         list: JList<out RoomModel>,
@@ -25,7 +25,7 @@ class CustomRenderer : ColoredListCellRenderer<RoomModel>() {
         } else {
             logger.warn("no value")
         }
-        if (selected && value != null) {
+        if (tabId == 1 && selected && value != null) {
             SELECTED_ROOM = value
         }
     }
