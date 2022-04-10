@@ -16,7 +16,7 @@ import java.util.concurrent.TimeUnit
 
 
 class StatusService : Disposable {
-    private var statusFuture: ScheduledFuture<*>? = null
+    internal var statusFuture: ScheduledFuture<*>? = null
     private val logger = Logger.getInstance(StatusService::class.java)
 
     init {

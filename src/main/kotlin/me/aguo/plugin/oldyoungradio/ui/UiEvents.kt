@@ -3,9 +3,6 @@ package me.aguo.plugin.oldyoungradio.ui
 import com.intellij.codeInsight.hints.presentation.MouseButton
 import com.intellij.codeInsight.hints.presentation.mouseButton
 import com.intellij.ide.DataManager
-import com.intellij.notification.Notification
-import com.intellij.notification.NotificationType
-import com.intellij.notification.Notifications
 import com.intellij.openapi.actionSystem.*
 import com.intellij.openapi.ui.JBPopupMenu
 import me.aguo.plugin.oldyoungradio.CURRENT_STREAM_URLS
@@ -13,6 +10,7 @@ import me.aguo.plugin.oldyoungradio.action.RefreshAllRoom
 import me.aguo.plugin.oldyoungradio.checkRoomExist
 import me.aguo.plugin.oldyoungradio.model.RoomModel
 import me.aguo.plugin.oldyoungradio.network.BiliBiliApi
+import me.aguo.plugin.oldyoungradio.notification.CustomNotifications
 import me.aguo.plugin.oldyoungradio.service.PlayerService
 import me.aguo.plugin.oldyoungradio.service.RoomsService
 import java.awt.event.MouseAdapter
@@ -57,14 +55,7 @@ class CustomMouseAdapter(private val tabId: Int) : MouseAdapter() {
         }
         if (e.clickCount == 2 && e.mouseButton == MouseButton.Left) {
             if ((list.selectedValue as RoomModel).live_status != 1) {
-                @Suppress("DialogTitleCapitalization")
-                val notification = Notification(
-                    "Old Young Radio",
-                    "Old Young Radio",
-                    "该用户未开播",
-                    NotificationType.WARNING
-                )
-                Notifications.Bus.notify(notification)
+                CustomNotifications.offline()
                 return
             }
             val roomId = (list.selectedValue as RoomModel).room_id

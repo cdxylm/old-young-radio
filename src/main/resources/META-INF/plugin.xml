@@ -19,5 +19,8 @@
     </extensions>
 
     <applicationListeners>
+        <listener
+                class="me.aguo.plugin.oldyoungradio.listener.CustomApplicationListener"
+                topic="com.intellij.openapi.application.ApplicationActivationListener"/>
     </applicationListeners>
 </idea-plugin>
