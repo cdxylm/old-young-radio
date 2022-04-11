@@ -1,6 +1,7 @@
 package me.aguo.plugin.oldyoungradio.network
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.Messages
 import com.squareup.moshi.Moshi
@@ -23,6 +24,7 @@ object BiliBiliApi {
     private val client: HttpClient = HttpClient.newBuilder().build()
     private val requestBuilder = HttpRequest.newBuilder()
     private val moshi = Moshi.Builder().build()
+    private val logger = Logger.getInstance(BiliBiliApi::class.java)
 
 
     fun getRoomInitInfo(room_id: Int, project: Project): RoomInitInfo? {
@@ -100,6 +102,7 @@ object BiliBiliApi {
             }
             return rooms
         }
+        logger.warn("return persistModel")
         return getPersistModel()
     }
 

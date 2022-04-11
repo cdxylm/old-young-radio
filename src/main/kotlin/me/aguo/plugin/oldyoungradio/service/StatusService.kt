@@ -11,13 +11,17 @@ import com.intellij.util.concurrency.EdtExecutorService
 import me.aguo.plugin.oldyoungradio.TOOL_WINDOW_ROOMS
 import me.aguo.plugin.oldyoungradio.getAllIds
 import me.aguo.plugin.oldyoungradio.network.BiliBiliApi
+import java.util.concurrent.ScheduledExecutorService
 import java.util.concurrent.ScheduledFuture
 import java.util.concurrent.TimeUnit
 
 
 class StatusService : Disposable {
-    internal var statusFuture: ScheduledFuture<*>? = null
     private val logger = Logger.getInstance(StatusService::class.java)
+    private var edtExecutorService: ScheduledExecutorService? = null
+    private var statusFuture: ScheduledFuture<*>? = null
+    internal var lastRefreshTime: Long? = null
+
 
     init {
         Disposer.register(ApplicationManager.getApplication(), this)
@@ -32,44 +36,57 @@ class StatusService : Disposable {
 
     private fun getStatus() {
 //        logger.warn("trying refresh")
+        lastRefreshTime = System.currentTimeMillis()
         @Suppress("UNCHECKED_CAST")
-        var tempRooms = BiliBiliApi.getStatusInfoByUids(getAllIds("uid") as List<Int>)
-        if (tempRooms.toSet() != TOOL_WINDOW_ROOMS.toList().toSet()) {
-            logger.info("Rooms' status changed.")
+        try {
+            var tempRooms = BiliBiliApi.getStatusInfoByUids(getAllIds("uid") as List<Int>)
+            if (tempRooms.toSet() != TOOL_WINDOW_ROOMS.toList().toSet()) {
+                logger.info("Rooms' status changed.")
 
-            val lastOffline = TOOL_WINDOW_ROOMS.toList().filter { it.live_status != 1 }
-                .toSet()
+                val lastOffline = TOOL_WINDOW_ROOMS.toList().filter { it.live_status != 1 }
+                    .toSet()
 
-            val currentOnline = tempRooms.filter { it?.live_status == 1 }
-                .toSet()
-            val newOnline = currentOnline.filter { online ->
-                online?.room_id in lastOffline.map { it.room_id }
-            }
-            if (newOnline.isNotEmpty()) {
-                newOnline.map {
-                    if (it != null) {
-                        @Suppress("DialogTitleCapitalization")
-                        val notification = Notification(
-                            "Old Young Radio",
-                            it.uname + "开播啦!",
-                            it.title,
-                            NotificationType.INFORMATION
-                        )
-                        Notifications.Bus.notify(notification)
+                val currentOnline = tempRooms.filter { it?.live_status == 1 }
+                    .toSet()
+                val newOnline = currentOnline.filter { online ->
+                    online?.room_id in lastOffline.map { it.room_id }
+                }
+                if (newOnline.isNotEmpty()) {
+                    newOnline.map {
+                        if (it != null) {
+                            @Suppress("DialogTitleCapitalization")
+                            val notification = Notification(
+                                "Old Young Radio",
+                                it.uname + "开播啦!",
+                                it.title,
+                                NotificationType.INFORMATION
+                            )
+                            Notifications.Bus.notify(notification)
+                        }
                     }
                 }
+                TOOL_WINDOW_ROOMS.removeAll()
+                tempRooms = tempRooms.sortedBy { it?.uid }
+                TOOL_WINDOW_ROOMS.addAll(0, tempRooms)
             }
-            TOOL_WINDOW_ROOMS.removeAll()
-            tempRooms = tempRooms.sortedBy { it?.room_id }
-            TOOL_WINDOW_ROOMS.addAll(0, tempRooms)
+        } catch (t: Throwable) {
+            logger.error(t)
         }
+
     }
 
     fun start() {
-        statusFuture = EdtExecutorService.getScheduledExecutorInstance().scheduleWithFixedDelay(
-            { getStatus() }, 1, 10, TimeUnit.SECONDS
+        edtExecutorService = EdtExecutorService.getScheduledExecutorInstance()
+        statusFuture = edtExecutorService?.scheduleWithFixedDelay(
+            { getStatus() }, 1, 15, TimeUnit.SECONDS
         )
         logger.warn("Status future started.")
+    }
+
+
+    fun restart() {
+        stop()
+        start()
     }
 
     private fun stop() {

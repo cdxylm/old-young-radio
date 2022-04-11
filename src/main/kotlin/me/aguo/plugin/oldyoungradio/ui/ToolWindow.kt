@@ -17,7 +17,6 @@ import me.aguo.plugin.oldyoungradio.*
 import me.aguo.plugin.oldyoungradio.action.*
 import me.aguo.plugin.oldyoungradio.model.RoomModel
 import me.aguo.plugin.oldyoungradio.network.BiliBiliApi
-import me.aguo.plugin.oldyoungradio.service.StatusService
 import javax.swing.JPanel
 
 
@@ -35,7 +34,6 @@ class ToolWindow : ToolWindowFactory, DumbAware {
 
     init {
         rooms.sortedBy { it?.room_id }.map { TOOL_WINDOW_ROOMS.add(it) }
-        StatusService.instance.start()
     }
 
     class ChannelTabSelectedListener : ContentManagerListener {
