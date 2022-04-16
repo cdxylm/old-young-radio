@@ -8,13 +8,13 @@ import com.intellij.openapi.wm.StatusBarWidget
 import com.intellij.openapi.wm.StatusBarWidgetFactory
 
 @Suppress("UnstableApiUsage")
-class MyCustomStatusBarWidgetFactory : StatusBarWidgetFactory, LightEditCompatible {
+class RadioStatusBarWidgetFactory : StatusBarWidgetFactory, LightEditCompatible {
     override fun getId(): String {
         return MY_CUSTOM_STATUS_BAR_WIDGET_ID
     }
 
     override fun getDisplayName(): String {
-        return "SheepRadio"
+        return MY_CUSTOM_STATUS_BAR_WIDGET_ID
     }
 
     override fun isAvailable(project: Project): Boolean {
