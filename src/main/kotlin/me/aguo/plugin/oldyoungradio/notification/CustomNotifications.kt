@@ -5,8 +5,31 @@ package me.aguo.plugin.oldyoungradio.notification
 import com.intellij.notification.Notification
 import com.intellij.notification.NotificationType
 import com.intellij.notification.Notifications
+import me.aguo.plugin.oldyoungradio.action.ConfigureVlcDir
 
 object CustomNotifications {
+
+    fun noVlc() {
+        val notification = Notification(
+            "Old Young Radio",
+            "Old Young Radio",
+            "插件没有找到VLC，请尝试手动配置Vlc目录",
+            NotificationType.ERROR,
+        )
+        notification.addAction(ConfigureVlcDir())
+        Notifications.Bus.notify(notification)
+    }
+
+    fun restartApp() {
+        val notification = Notification(
+            "Old Young Radio",
+            "Old Young Radio",
+            "插件配置已修改，请重启IDE或应用。",
+            NotificationType.WARNING,
+        )
+        Notifications.Bus.notify(notification)
+    }
+
     fun apiError() {
         val notification = Notification(
             "Old Young Radio",
@@ -17,7 +40,7 @@ object CustomNotifications {
         Notifications.Bus.notify(notification)
     }
 
-    fun offline(){
+    fun offline() {
         val notification = Notification(
             "Old Young Radio",
             "Old Young Radio",
