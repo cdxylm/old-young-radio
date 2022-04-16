@@ -17,6 +17,8 @@ class StopRadio : AnAction(
 
     override fun update(e: AnActionEvent) {
         val presentation = e.presentation
+        presentation.text = "Stop: " + PLAYING_ROOM.title
+        presentation.description = PLAYING_ROOM.title.ifEmpty { "Stop" }
         presentation.isEnabled = PLAYING_ROOM.room_id != -99
         super.update(e)
     }
