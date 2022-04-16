@@ -24,7 +24,9 @@ You can:
 - Subscribe bilibili live room.
 - Get real-time room status.
 - Play the audio of the live stream in the background.
-
+**Play function requires [VLC](https://www.videolan.org/vlc/) player to be installed.**
+**If you get an error about Libvlc when you double-click on the room(play action), you may need to configure the vlc directory manually**
+<kbd>Settings/Preferences</kbd> > <kbd>Tools</kbd> > <kbd>Old Young Radio</kbd> > <kbd>VLC directory</kbd>
 #### Usage:
 
 ##### Subscribe:
@@ -50,8 +52,6 @@ Click the "Refresh" button <img src="https://img.icons8.com/ios-glyphs/16/000000
 ##### Play:
 Double-click the room item which it's online(the item icon is green.)
 
-**Play function requires [VLC](https://www.videolan.org/vlc/) player to be installed.**
-
 ##### Stop:
 When the plugin is playing some streaming media,the stop button <img src="https://img.icons8.com/office/16/000000/stop.png"> is available.
 Click the button.
@@ -64,7 +64,8 @@ Click the button.
 后来觉得画面也不需要，于是直接做一个插件到IDE中去，后台播放音频。
 
 **播放功能需要安装 [VLC](https://www.videolan.org/vlc/) 播放器**
-
+**如果双击播放的时候提示Libvlc相关的错误，请手动配置vlc目录，重启应用再试。**
+<kbd>Settings/Preferences</kbd> > <kbd>Tools</kbd> > <kbd>Old Young Radio</kbd> > <kbd>VLC directory</kbd>
 #### 使用：
 
 点击AddRoom <img src="https://img.icons8.com/external-tanah-basah-glyph-tanah-basah/16/000000/external-plus-user-interface-tanah-basah-glyph-tanah-basah-2.png"> 输入房间号（支持短号，如英雄联盟赛事房间号7734200，短号为6）订阅房间。房间号可批量输入，用中英文逗号隔开即可。
@@ -80,8 +81,12 @@ Click the button.
 点击 Stop <img src="https://img.icons8.com/office/16/000000/stop.png"> 停止播放。
 
 
-默认每10秒刷新一次已订阅的房间状态，目前无法自定义间隔。
-
+默认每15秒刷新一次已订阅的房间状态，目前无法自定义间隔。
+### 已知问题：
+后台刷新状态的Api每隔一段时间(几个小时)可能会收到如下错误，不影响正常使用。
+```log
+java.io.IOException: /192.168.x.x:port: GOAWAY received
+```
 
 <!-- Plugin description end -->
 

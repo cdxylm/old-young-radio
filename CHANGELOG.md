@@ -3,6 +3,15 @@
 # old-young-radio Changelog
 
 ## [Unreleased]
+## [0.0.3]
+### Added
+English:
+- [x] You can configure the Vlc directory. 
+- [x] Add an icon to statusbar.
+ 
+中文：
+- [x] 你可以手动配置vlc目录。
+- [x] 在statusbar增加了一个图标，指示播放状态。
 
 ## [0.0.2]
 ### Added
