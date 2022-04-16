@@ -19,6 +19,7 @@ import java.net.http.HttpResponse
 /*
 参见Github上B站API项目 https://github.com/SocialSisterYi/bilibili-API-collect/
  */
+// TODO: java.io.IOException: /192.168.3.86:52890: GOAWAY received
 
 object BiliBiliApi {
     private val client: HttpClient = HttpClient.newBuilder().build()
