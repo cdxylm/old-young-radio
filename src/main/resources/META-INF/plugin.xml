@@ -15,7 +15,12 @@
         <toolWindow factoryClass="me.aguo.plugin.oldyoungradio.ui.ToolWindow" id="Radio" canCloseContents="false"
                     anchor="left" icon="me.aguo.plugin.oldyoungradio.ui.PluginIcons.mainIcon">
         </toolWindow>
-        <statusBarWidgetFactory implementation="me.aguo.plugin.oldyoungradio.ui.MyCustomStatusBarWidgetFactory"/>
+        <statusBarWidgetFactory implementation="me.aguo.plugin.oldyoungradio.ui.RadioStatusBarWidgetFactory"/>
+        <applicationConfigurable
+                parentId="tools"
+                instance="me.aguo.plugin.oldyoungradio.RadioSettings"
+                id="me.aguo.plugin.oldyoungradio.RadioSettings"
+                displayName="Old Young Radio"/>
     </extensions>
 
     <applicationListeners>
