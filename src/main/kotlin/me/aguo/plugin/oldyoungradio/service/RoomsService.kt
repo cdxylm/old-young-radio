@@ -15,7 +15,8 @@ class RoomsService : PersistentStateComponent<RoomsService.State> {
     private val jsonAdapter: JsonAdapter<RoomModel> = moshi.adapter(RoomModel::class.java)
 
     data class State(
-        var roomList: MutableList<String> = CopyOnWriteArrayList()
+        var roomList: MutableList<String> = CopyOnWriteArrayList(),
+        var settings: MutableMap<String, String> = mutableMapOf("vlcDirectory" to "")
     )
 
     companion object {
