@@ -13,7 +13,7 @@ object CustomNotifications {
         val notification = Notification(
             "Old Young Radio",
             "Old Young Radio",
-            "插件没有找到VLC，请尝试手动配置Vlc目录",
+            "插件没有找到VLC，请尝试手动配置Vlc目录<br>(包含libvlc、libvlccore等文件，可能需要重启应用)",
             NotificationType.ERROR,
         )
         notification.addAction(ConfigureVlcDir())
