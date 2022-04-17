@@ -29,7 +29,6 @@ class PlayerService : Disposable {
         Disposer.register(ApplicationManager.getApplication(), this)
         val customVlcDirectory = RoomsService.instance.state.settings["vlcDirectory"].toString()
         NativeLibrary.addSearchPath(RuntimeUtil.getLibVlcLibraryName(), customVlcDirectory)
-        CustomNotifications.noVlc()
         val found = NativeDiscovery().discover()
         logger.warn("Vlcj NativeDiscovery:$found")
         try {

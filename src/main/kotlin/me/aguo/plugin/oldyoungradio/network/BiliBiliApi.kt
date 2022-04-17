@@ -20,7 +20,11 @@ import java.net.http.HttpResponse
 参见Github上B站API项目 https://github.com/SocialSisterYi/bilibili-API-collect/
  */
 // TODO: java.io.IOException: /192.168.3.86:52890: GOAWAY received
-
+/* 该问题的原因：将client、requestBuilder从函数中抽离到object中后，client和服务器建立的连接数会不断增加（后台刷新房间状态）直至超过1000
+   而nginx里默认的http2_requests 就是1000 -> http://nginx.org/en/docs/http/ngx_http_v2_module.html#http2_max_requests
+   这也和问题出现的间隔相吻合，每个小时240次左右的请求，5个小时左右就会出现这个问题。
+   暂时使用http1去规避，以后可以加个计数器重置client，或者其他方法解决，目前使用http1没有出现这个问题了。
+*/
 object BiliBiliApi {
     private val client: HttpClient = HttpClient.newBuilder().build()
     private val requestBuilder = HttpRequest.newBuilder()
@@ -84,6 +88,7 @@ object BiliBiliApi {
         val request = requestBuilder
             .uri(URI.create("https://api.live.bilibili.com/room/v1/Room/get_status_info_by_uids"))
             .POST(HttpRequest.BodyPublishers.ofString(requestBody))
+            .version(HttpClient.Version.HTTP_1_1)
             .build()
         val response = client.send(request, HttpResponse.BodyHandlers.ofString())
         if (response.body().indexOf("message\":\"success") != -1 &&

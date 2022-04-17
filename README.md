@@ -84,6 +84,7 @@ Click the button.
 默认每15秒刷新一次已订阅的房间状态，目前无法自定义间隔。
 ### 已知问题：
 后台刷新状态的Api每隔一段时间(几个小时)可能会收到如下错误，不影响正常使用。
+现在通过改用http_1暂时解决这个问题。
 ```log
 java.io.IOException: /192.168.x.x:port: GOAWAY received
 ```
