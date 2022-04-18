@@ -30,6 +30,8 @@ object BiliBiliApi {
     private val requestBuilder = HttpRequest.newBuilder()
     private val moshi = Moshi.Builder().build()
     private val logger = Logger.getInstance(BiliBiliApi::class.java)
+    private var clientForGetStatus = HttpClient.newBuilder().build()
+    private var statusRequestNum = 0
 
 
     fun getRoomInitInfo(room_id: Int, project: Project): RoomInitInfo? {
@@ -88,9 +90,14 @@ object BiliBiliApi {
         val request = requestBuilder
             .uri(URI.create("https://api.live.bilibili.com/room/v1/Room/get_status_info_by_uids"))
             .POST(HttpRequest.BodyPublishers.ofString(requestBody))
-            .version(HttpClient.Version.HTTP_1_1)
             .build()
-        val response = client.send(request, HttpResponse.BodyHandlers.ofString())
+        val response = clientForGetStatus.send(request, HttpResponse.BodyHandlers.ofString())
+        if (statusRequestNum > 900) {
+            statusRequestNum = 0
+            clientForGetStatus = HttpClient.newBuilder().build()
+        } else {
+            statusRequestNum += 1
+        }
         if (response.body().indexOf("message\":\"success") != -1 &&
             response.body().indexOf("\"data\":[]") == -1
         ) {

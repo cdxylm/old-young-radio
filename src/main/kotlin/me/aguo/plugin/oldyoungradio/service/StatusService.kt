@@ -70,7 +70,7 @@ class StatusService : Disposable {
                 TOOL_WINDOW_ROOMS.addAll(0, tempRooms)
             }
         } catch (t: Throwable) {
-            logger.error(t)
+            logger.warn(t)
         }
 
     }
