@@ -119,9 +119,9 @@ object BiliBiliApi {
         return getPersistModel()
     }
 
-    fun getSteamUrls(room_id: Int): MutableList<String> {
+    fun getSteamUrls(room_id: Int): List<String>? {
         val request = requestBuilder
-            .uri(URI.create("https://api.live.bilibili.com/xlive/web-room/v2/index/getRoomPlayInfo?room_id=${room_id}&no_playurl=0&mask=1&platform=web&protocol=0,1&format=0&codec=0,1"))
+            .uri(URI.create("https://api.live.bilibili.com/xlive/web-room/v2/index/getRoomPlayInfo?room_id=${room_id}&no_playurl=0&mask=1&platform=web&protocol=0,1&format=0,1,2&codec=0,1"))
             .GET()
             .build()
 
@@ -136,7 +136,7 @@ object BiliBiliApi {
             return parseUrls(streamUrlsResponseV2)
         }
         if (!apiResponseCorrect) CustomNotifications.apiError() else CustomNotifications.offline()
-        return mutableListOf()
+        return null
     }
 
     fun getFollowings(mid: Int): List<Int>? {

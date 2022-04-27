@@ -1,8 +1,5 @@
 package me.aguo.plugin.oldyoungradio.service
 
-import com.intellij.notification.Notification
-import com.intellij.notification.NotificationType
-import com.intellij.notification.Notifications
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.diagnostic.Logger
@@ -10,6 +7,7 @@ import com.intellij.openapi.util.Disposer
 import com.intellij.util.concurrency.EdtExecutorService
 import com.sun.jna.NativeLibrary
 import me.aguo.plugin.oldyoungradio.PLAYING_ROOM
+import me.aguo.plugin.oldyoungradio.listener.CustomMediaPlayerEventAdapter
 import me.aguo.plugin.oldyoungradio.model.RoomModel
 import me.aguo.plugin.oldyoungradio.notification.CustomNotifications
 import uk.co.caprica.vlcj.binding.LibVlc
@@ -17,6 +15,7 @@ import uk.co.caprica.vlcj.binding.RuntimeUtil
 import uk.co.caprica.vlcj.factory.MediaPlayerFactory
 import uk.co.caprica.vlcj.factory.discovery.NativeDiscovery
 import uk.co.caprica.vlcj.player.base.State
+import uk.co.caprica.vlcj.player.component.CallbackMediaListPlayerComponent
 import uk.co.caprica.vlcj.player.component.CallbackMediaPlayerComponent
 import java.util.concurrent.ScheduledFuture
 import java.util.concurrent.TimeUnit
@@ -42,7 +41,7 @@ class PlayerService : Disposable {
 
     private val options = arrayOf("-I dummy", "--no-video")
     private val factory = MediaPlayerFactory(*options)
-    private var myPlayer: CallbackMediaPlayerComponent? = CallbackMediaPlayerComponent(
+    private var myPlayer: CallbackMediaListPlayerComponent? = CallbackMediaListPlayerComponent(
         factory,
         null,
         null,
@@ -69,7 +68,7 @@ class PlayerService : Disposable {
 
     private fun getPlayer(): CallbackMediaPlayerComponent {
         if (myPlayer == null) {
-            myPlayer = CallbackMediaPlayerComponent(
+            myPlayer = CallbackMediaListPlayerComponent(
                 factory,
                 null,
                 null,
@@ -94,26 +93,17 @@ class PlayerService : Disposable {
     }
 
     fun playVlc(urls: List<String>, room: RoomModel) {
-        val suitableUrl = urls.filter {
-            it.indexOf("gotcha03") != -1
+        val extraOption: Array<String> = arrayOf()
+        when (RoomsService.instance.state.settings["format"].toString()) {
+            "flv" -> {}
+            "ts" -> {}
+            "fmp4" -> {}
         }
-        if (suitableUrl.isEmpty()) {
-            @Suppress("DialogTitleCapitalization")
-            val notification = Notification(
-                "Old Young Radio",
-                "播放错误",
-                "没有找到合适的播放流",
-                NotificationType.WARNING
-            )
-            Notifications.Bus.notify(notification)
-            return
-        }
-        for (i in suitableUrl) {
-            if (i.indexOf("gotcha03") != -1) {
-                instance.getPlayer().mediaPlayer().media().play(i)
-                PLAYING_ROOM = room
-            }
-        }
+        val urlIterator = urls.iterator()
+        val player = instance.getPlayer().mediaPlayer()
+        player.events().addMediaPlayerEventListener(CustomMediaPlayerEventAdapter(urlIterator, room))
+        player.media().play(urlIterator.next(), *extraOption)
+        PLAYING_ROOM = room
     }
 
     fun stopVlc() {

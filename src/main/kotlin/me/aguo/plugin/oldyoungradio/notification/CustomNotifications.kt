@@ -5,6 +5,7 @@ package me.aguo.plugin.oldyoungradio.notification
 import com.intellij.notification.Notification
 import com.intellij.notification.NotificationType
 import com.intellij.notification.Notifications
+import me.aguo.plugin.oldyoungradio.action.ConfigureStreamFormat
 import me.aguo.plugin.oldyoungradio.action.ConfigureVlcDir
 
 object CustomNotifications {
@@ -47,6 +48,18 @@ object CustomNotifications {
             "该用户未开播",
             NotificationType.WARNING
         )
+        Notifications.Bus.notify(notification)
+    }
+
+    fun noUrl(reason: String = "该格式下没有找到直播流地址") {
+        @Suppress("DialogTitleCapitalization")
+        val notification = Notification(
+            "Old Young Radio",
+            "播放遇到错误",
+            "$reason，请修改视频流格式（Stream format）后重试。",
+            NotificationType.WARNING
+        )
+        notification.addAction(ConfigureStreamFormat())
         Notifications.Bus.notify(notification)
     }
 }

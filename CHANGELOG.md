@@ -3,6 +3,23 @@
 # old-young-radio Changelog
 
 ## [Unreleased]
+## [0.0.4]
+### Added
+English:
+- [x] You can choose the stream format.
+- [x] You can get the most recently played MRLs in the settings panel.
+
+中文：
+- [x] 你可以设置用于播放的视频流格式，推荐使用flv或者ts。
+- [x] 你可以在设置面板中看见最近一次尝试播放的直播间的直播流地址。
+
+### Removed
+English:
+- [x] Remove MRLs filters.
+
+中文
+- [x] 移除了MRLs过滤器，插件将为您尝试选中格式下的所有直播流地址。
+
 ## [0.0.3]
 ### Added
 English:

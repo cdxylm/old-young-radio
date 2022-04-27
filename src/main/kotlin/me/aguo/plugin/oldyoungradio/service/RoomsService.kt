@@ -16,7 +16,10 @@ class RoomsService : PersistentStateComponent<RoomsService.State> {
 
     data class State(
         var roomList: MutableList<String> = CopyOnWriteArrayList(),
-        var settings: MutableMap<String, String> = mutableMapOf("vlcDirectory" to "")
+        var settings: MutableMap<String, String> = mutableMapOf(
+            "vlcDirectory" to "",
+            "format" to "",
+        )
     )
 
     companion object {

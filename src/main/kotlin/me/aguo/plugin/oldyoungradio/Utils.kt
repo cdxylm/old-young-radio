@@ -4,11 +4,8 @@ import com.intellij.notification.NotificationGroupManager
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.project.Project
 import com.squareup.moshi.Moshi
-import me.aguo.plugin.oldyoungradio.model.Codec
 import me.aguo.plugin.oldyoungradio.model.RoomModel
 import me.aguo.plugin.oldyoungradio.model.StreamUrlResponseV2
-import me.aguo.plugin.oldyoungradio.model.UrlInfo
-import me.aguo.plugin.oldyoungradio.network.BiliBiliApi
 import me.aguo.plugin.oldyoungradio.service.RoomsService
 
 
@@ -46,47 +43,33 @@ fun getPersistModel(): List<RoomModel?> {
     }
 }
 
-fun execCommand(cmd: Array<String>) {
-    val ps = Runtime.getRuntime().exec(cmd)
-    println(ps.pid())
-}
-
-@Deprecated(
-    "Don't need execute command to play stream",
-    ReplaceWith("Player.instance.playInVlcJ()", "Utils.playInVlcJ"),
-    DeprecationLevel.ERROR
-)
-fun play(room: Int, cmd: String) {
-    val urls = BiliBiliApi.getSteamUrls(room)
-    CURRENT_STREAM_URLS = urls
-    if (CURRENT_STREAM_URLS.isNotEmpty()) {
-        val firstUrl = urls[0]
-        val currentCmd = arrayOf(cmd, "-I dummy", "--no-video", firstUrl)
-        execCommand(currentCmd)
-    }
-}
-
 
 fun initSelectedRoom(): RoomModel {
     return RoomModel(-99, -99, -99)
 }
 
 
-fun parseUrls(json: StreamUrlResponseV2?): MutableList<String> {
+fun parseUrls(json: StreamUrlResponseV2?): List<String> {
     if (json == null) {
-        return mutableListOf()
+        return listOf()
     }
-    val flvStreamUrl = mutableListOf<String>()
-
-    val stream = json.data.playurl_info.playurl.stream
-    val flvStream: Codec = stream[0].format[0].codec[0]
-    val baseUrl = flvStream.base_url
-    val urlInfo: List<UrlInfo> = flvStream.url_info
-
-    for (i in urlInfo) {
-        flvStreamUrl.add(i.host + baseUrl + i.extra)
+    val streamList = json.data.playurl_info.playurl.stream
+    val formatStreamMap = mutableMapOf<String, List<String>>()
+    for (s in streamList) {
+        for (f in s.format) {
+            val streamUrl = mutableListOf<String>()
+            for (c in f.codec) {
+                val baseUrl = c.base_url
+                val urlInfo = c.url_info
+                for (i in urlInfo) {
+                    streamUrl.add(i.host + baseUrl + i.extra)
+                }
+            }
+            formatStreamMap[f.format_name] = streamUrl
+        }
     }
-    return flvStreamUrl
+    val mode = RoomsService.instance.state.settings["format"].toString()
+    return formatStreamMap[mode] ?: listOf()
 }
 
 fun notifyError(project: Project?, content: String?) {

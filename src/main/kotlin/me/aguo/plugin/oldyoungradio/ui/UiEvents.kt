@@ -59,14 +59,13 @@ class CustomMouseAdapter(private val tabId: Int) : MouseAdapter() {
                 return
             }
             val roomId = (list.selectedValue as RoomModel).room_id
-            CURRENT_STREAM_URLS = if ((list.selectedValue as RoomModel).live_status == 1) {
-                val urls = BiliBiliApi.getSteamUrls(roomId)
-                urls
-            } else {
-                listOf()
-            }
-            if (CURRENT_STREAM_URLS.isNotEmpty()) {
-                PlayerService.instance.playVlc(CURRENT_STREAM_URLS, list.selectedValue as RoomModel)
+            BiliBiliApi.getSteamUrls(roomId)?.let {
+                CURRENT_STREAM_URLS = it
+                if (CURRENT_STREAM_URLS.isNotEmpty()) {
+                    PlayerService.instance.playVlc(CURRENT_STREAM_URLS, list.selectedValue as RoomModel)
+                } else {
+                    CustomNotifications.noUrl()
+                }
             }
         }
 
