@@ -13,7 +13,6 @@ import me.aguo.plugin.oldyoungradio.notification.CustomNotifications
 import uk.co.caprica.vlcj.binding.LibVlc
 import uk.co.caprica.vlcj.binding.RuntimeUtil
 import uk.co.caprica.vlcj.factory.MediaPlayerFactory
-import uk.co.caprica.vlcj.factory.discovery.NativeDiscovery
 import uk.co.caprica.vlcj.player.base.State
 import uk.co.caprica.vlcj.player.component.CallbackMediaListPlayerComponent
 import uk.co.caprica.vlcj.player.component.CallbackMediaPlayerComponent
@@ -28,8 +27,8 @@ class PlayerService : Disposable {
         Disposer.register(ApplicationManager.getApplication(), this)
         val customVlcDirectory = RoomsService.instance.state.settings["vlcDirectory"].toString()
         NativeLibrary.addSearchPath(RuntimeUtil.getLibVlcLibraryName(), customVlcDirectory)
-        val found = NativeDiscovery().discover()
-        logger.warn("Vlcj NativeDiscovery:$found")
+//        val found = NativeDiscovery().discover()  It is always false. Not found reason.
+//        logger.warn("Vlcj NativeDiscovery:$found")
         try {
             val version = LibVlc.libvlc_get_version()
             logger.info("VLC VERSION:$version")
