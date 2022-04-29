@@ -3,6 +3,20 @@
 # old-young-radio Changelog
 
 ## [Unreleased]
+## [0.0.5]
+### Fixed
+English:
+- [x] Fixed an issue where the ui would freeze due to network connection failures.
+
+中文:
+- [x] 修复了网络连接问题导致IDE UI冻结的严重Bug。 
+
+### Added
+English:
+- [x] Added notification of network connection failure.
+
+中文
+- [x] 增加网络连接失败的通知提醒。
 ## [0.0.4]
 ### Added
 English:
