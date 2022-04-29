@@ -52,7 +52,6 @@ object CustomNotifications {
     }
 
     fun noUrl(reason: String = "该格式下没有找到直播流地址") {
-        @Suppress("DialogTitleCapitalization")
         val notification = Notification(
             "Old Young Radio",
             "播放遇到错误",
@@ -60,6 +59,16 @@ object CustomNotifications {
             NotificationType.WARNING
         )
         notification.addAction(ConfigureStreamFormat())
+        Notifications.Bus.notify(notification)
+    }
+
+    fun connectException() {
+        val notification = Notification(
+            "Old Young Radio",
+            "Old Young Radio",
+            "网络请求失败，请检查网络连接。",
+            NotificationType.WARNING
+        )
         Notifications.Bus.notify(notification)
     }
 }

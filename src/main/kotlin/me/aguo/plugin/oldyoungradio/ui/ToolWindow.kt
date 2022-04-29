@@ -2,7 +2,6 @@ package me.aguo.plugin.oldyoungradio.ui
 
 import com.intellij.ide.DataManager
 import com.intellij.openapi.actionSystem.*
-import com.intellij.openapi.project.DumbAware
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.SimpleToolWindowPanel
 import com.intellij.openapi.wm.ToolWindow
@@ -21,7 +20,7 @@ import javax.swing.JPanel
 
 
 @Suppress("UnstableApiUsage")
-class ToolWindow : ToolWindowFactory, DumbAware {
+class ToolWindow : ToolWindowFactory {
     companion object {
         private const val TAB_SUBSCRIBED_ID = 1
         private const val TAB_CHANNELS_ID = 2

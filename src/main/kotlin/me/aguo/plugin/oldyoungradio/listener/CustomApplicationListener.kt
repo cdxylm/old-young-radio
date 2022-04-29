@@ -10,12 +10,12 @@ class CustomApplicationListener : ApplicationActivationListener {
 
     override fun applicationActivated(ideFrame: IdeFrame) {
         StatusService.instance.apply {
-            if (this.lastRefreshTime == null) {
-                this.start()
-            } else if (System.currentTimeMillis() - StatusService.instance.lastRefreshTime!! > 2_0000) {
+            if (lastRefreshTime == null && statusFuture == null) {
+                start()
+            } else if (lastRefreshTime != null && System.currentTimeMillis() - lastRefreshTime!! > 2_0000) {
                 logger.warn("StatusService seems to have encountered problems.")
                 logger.warn("Try to restart the statusFuture.")
-                StatusService.instance.restart()
+                restart()
             } else {
                 logger.info("StatusService seems to be work correctly.")
             }

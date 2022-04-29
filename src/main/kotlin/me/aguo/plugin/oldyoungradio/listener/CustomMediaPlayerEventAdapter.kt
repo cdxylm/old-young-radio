@@ -6,10 +6,15 @@ import me.aguo.plugin.oldyoungradio.notification.CustomNotifications
 import uk.co.caprica.vlcj.player.base.MediaPlayer
 import uk.co.caprica.vlcj.player.base.MediaPlayerEventAdapter
 
-class CustomMediaPlayerEventAdapter(private val urlIterator: Iterator<String>, private val room: RoomModel) :
+class CustomMediaPlayerEventAdapter(
+    private val urlIterator: Iterator<String>,
+    private val room: RoomModel,
+    private var timeNotChanged: Int,
+    private var oldTime: Long
+) :
     MediaPlayerEventAdapter() {
     override fun playing(mediaPlayer: MediaPlayer?) {
-        mediaPlayer?.events()?.removeMediaPlayerEventListener(this)
+//        println("playing")
     }
 
     override fun error(mediaPlayer: MediaPlayer?) {
@@ -24,8 +29,27 @@ class CustomMediaPlayerEventAdapter(private val urlIterator: Iterator<String>, p
         }
     }
 
-    override fun finished(mediaPlayer: MediaPlayer?) {
+    override fun stopped(mediaPlayer: MediaPlayer?) {
         mediaPlayer?.events()?.removeMediaPlayerEventListener(this)
+        PLAYING_ROOM = RoomModel(-99, -99, -99)
+    }
+
+    override fun finished(mediaPlayer: MediaPlayer?) {
+//        println("finished")
+    }
+
+    override fun timeChanged(mediaPlayer: MediaPlayer?, newTime: Long) {
+        if (oldTime == newTime) {
+            timeNotChanged += 1
+        } else {
+            timeNotChanged = 0
+        }
+        if (timeNotChanged > 10) {
+            mediaPlayer?.submit {
+                mediaPlayer.controls().stop()
+            }
+        }
+        oldTime = newTime
     }
 
 }

@@ -6,11 +6,11 @@ import com.intellij.openapi.wm.IconLikeCustomStatusBarWidget
 import com.intellij.openapi.wm.StatusBar
 import com.intellij.openapi.wm.StatusBarWidget
 import com.intellij.openapi.wm.impl.status.TextPanel
-import com.intellij.util.concurrency.EdtExecutorService
 import com.intellij.util.containers.ContainerUtil
 import com.intellij.util.ui.update.Activatable
 import com.intellij.util.ui.update.UiNotifyConnector
 import me.aguo.plugin.oldyoungradio.PLAYING_ROOM
+import java.util.concurrent.Executors
 import java.util.concurrent.ScheduledFuture
 import java.util.concurrent.TimeUnit
 import javax.swing.Icon
@@ -56,7 +56,7 @@ class MyCustomStatusBarWidget : IconLikeCustomStatusBarWidget, Activatable {
     override fun getPresentation(): StatusBarWidget.WidgetPresentation? = null
 
     override fun showNotify() {
-        myFuture = EdtExecutorService.getScheduledExecutorInstance().scheduleWithFixedDelay(
+        myFuture = Executors.newSingleThreadScheduledExecutor().scheduleWithFixedDelay(
             {
                 this.update()
                 statusBar?.updateWidget(MY_CUSTOM_STATUS_BAR_WIDGET_ID)
