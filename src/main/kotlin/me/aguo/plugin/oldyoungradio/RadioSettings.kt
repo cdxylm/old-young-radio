@@ -76,7 +76,7 @@ class RadioSettings : Configurable {
             }
             row("Stream format:") {
                 formatComboBox().focused()
-                    .comment("Flv or ts format is recommended. It often takes a few seconds to open a stream in ts format. Some MRLs are not playable in vlc.")
+                    .comment("Flv or ts format is recommended. <a href='https://plugins.jetbrains.com/plugin/18850-old-young-radio/faq'>FAQ</a>")
                 cell(isFullWidth = false) {
                     pcr().visible(false)
                 }

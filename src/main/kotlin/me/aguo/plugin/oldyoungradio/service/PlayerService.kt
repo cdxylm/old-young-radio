@@ -13,7 +13,9 @@ import uk.co.caprica.vlcj.binding.LibVlc
 import uk.co.caprica.vlcj.binding.RuntimeUtil
 import uk.co.caprica.vlcj.factory.MediaPlayerFactory
 import uk.co.caprica.vlcj.player.component.CallbackMediaPlayerComponent
+import java.util.concurrent.Executors
 import java.util.concurrent.ScheduledFuture
+import java.util.concurrent.TimeUnit
 
 class PlayerService : Disposable {
     private val logger = Logger.getInstance(PlayerService::class.java)
@@ -42,7 +44,7 @@ class PlayerService : Disposable {
         null,
     )
 
-    private var stateFuture: ScheduledFuture<*>? = null
+    private var timeChangedFuture: ScheduledFuture<*>? = null
 
 
     companion object {
@@ -67,6 +69,9 @@ class PlayerService : Disposable {
 
     fun playVlc(urls: List<String>, room: RoomModel) {
         stopVlc()
+        timeChangedFuture = Executors.newSingleThreadScheduledExecutor().scheduleWithFixedDelay(
+            { checkTimeChanged() }, 10_000, 500, TimeUnit.MILLISECONDS
+        )
         val extraOption: Array<String> = arrayOf()
         when (RoomsService.instance.state.settings["format"].toString()) {
             "flv" -> {}
@@ -76,7 +81,7 @@ class PlayerService : Disposable {
         val urlIterator = urls.iterator()
         val player = instance.getPlayer().mediaPlayer()
         player.events()
-            .addMediaPlayerEventListener(CustomMediaPlayerEventAdapter(urlIterator, room, timeNotChanged, oldTime))
+            .addMediaPlayerEventListener(CustomMediaPlayerEventAdapter(urlIterator, room, timeNotChanged))
         player.media().play(urlIterator.next(), *extraOption)
         player.titles().setTitle(room.room_id)
         PLAYING_ROOM = room
@@ -85,13 +90,30 @@ class PlayerService : Disposable {
     fun stopVlc() {
         if (myPlayer?.mediaPlayer()?.status()?.isPlaying == true) {
             myPlayer?.mediaPlayer()?.controls()?.stop()
-            if (stateFuture != null) {
-                logger.warn("State future cancelled.")
-                stateFuture!!.cancel(true)
-                stateFuture = null
-            }
+        }
+        if (timeChangedFuture != null) {
+            timeChangedFuture!!.cancel(true)
+            timeChangedFuture = null
         }
     }
+
+    private fun checkTimeChanged() {
+        myPlayer?.let {
+            val newTime = it.mediaPlayer().status().time()
+            if (oldTime == newTime) {
+                timeNotChanged += 1
+            } else {
+                timeNotChanged = 0
+            }
+            if (timeNotChanged > 60) {
+                logger.warn("The newTime hasn't changed for a long time, try to stopVlc.")
+                stopVlc()
+                timeNotChanged = 0
+            }
+            oldTime = newTime
+        }
+    }
+
 
     override fun dispose() {
         stopVlc()

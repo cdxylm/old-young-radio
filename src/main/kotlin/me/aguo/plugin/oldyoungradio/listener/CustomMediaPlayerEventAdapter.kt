@@ -10,7 +10,6 @@ class CustomMediaPlayerEventAdapter(
     private val urlIterator: Iterator<String>,
     private val room: RoomModel,
     private var timeNotChanged: Int,
-    private var oldTime: Long
 ) :
     MediaPlayerEventAdapter() {
     override fun playing(mediaPlayer: MediaPlayer?) {
@@ -21,10 +20,12 @@ class CustomMediaPlayerEventAdapter(
         if (urlIterator.hasNext()) {
             mediaPlayer?.submit {
                 mediaPlayer.media().play(urlIterator.next())
+                timeNotChanged = 0
                 PLAYING_ROOM = room
             }
         } else {
             CustomNotifications.noUrl("为您尝试了该格式下所有链接，仍未成功")
+            PLAYING_ROOM = RoomModel(-99, -99, -99)
             mediaPlayer?.events()?.removeMediaPlayerEventListener(this)
         }
     }
@@ -35,21 +36,6 @@ class CustomMediaPlayerEventAdapter(
     }
 
     override fun finished(mediaPlayer: MediaPlayer?) {
-//        println("finished")
+        PLAYING_ROOM = RoomModel(-99, -99, -99)
     }
-
-    override fun timeChanged(mediaPlayer: MediaPlayer?, newTime: Long) {
-        if (oldTime == newTime) {
-            timeNotChanged += 1
-        } else {
-            timeNotChanged = 0
-        }
-        if (timeNotChanged > 10) {
-            mediaPlayer?.submit {
-                mediaPlayer.controls().stop()
-            }
-        }
-        oldTime = newTime
-    }
-
 }

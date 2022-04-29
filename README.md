@@ -15,9 +15,9 @@
 
 为了方便控制使用了VLCJ包，它会自动发现本地的VLC。
 <!-- Plugin description -->
-Listen to`Bilibili Live` in IDE.
+Listen to `Bilibili Live` in IDE.
 
-在IDE中听`B站`直播。
+在IDE中听 `B站` 直播。
 ### English:
 
 This plugin is about [bilibili live](https://live.bilibili.com).
