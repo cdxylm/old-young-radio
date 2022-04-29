@@ -15,6 +15,9 @@
 
 为了方便控制使用了VLCJ包，它会自动发现本地的VLC。
 <!-- Plugin description -->
+Listen to`Bilibili Live` in IDE.
+
+在IDE中听`B站`直播。
 ### English:
 
 This plugin is about [bilibili live](https://live.bilibili.com).
@@ -82,6 +85,8 @@ Click the button.
 
 
 默认每15秒刷新一次已订阅的房间状态，目前无法自定义间隔。
+
+<!-- Plugin description end -->
 ### 常见问题：
 - 后台刷新状态的Api每隔一段时间(几个小时)可能会收到如下错误，不影响正常使用。
 v0.0.3中已经解决
@@ -117,7 +122,6 @@ v0.0.3中已经解决
   显示最近尝试播放的直播间的直播流地址:
   <kbd>Settings/Preferences</kbd> > <kbd>Tools</kbd> > <kbd>Old Young Radio</kbd> > <kbd>Recent MRLs</kbd> >
   <kbd>Check "Show"</kbd>
-<!-- Plugin description end -->
 
 ## Installation
 
