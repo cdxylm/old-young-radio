@@ -105,7 +105,7 @@ class RadioSettings : Configurable {
         val format = formatComboBox.selectedItem?.toString()
         format?.let {
             roomsService.state.settings["format"] = it
-            roomsService.state.settings["${it}Options"] = extraOptions.text
+            roomsService.state.settings["${it}Options"] = extraOptions.text.trim()
         }
         if (old != new) {
             logger.warn("VLC directory changed: $old -> $new ")

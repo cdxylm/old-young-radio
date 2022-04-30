@@ -35,6 +35,7 @@ class PlayerService : Disposable {
     private var timeNotChanged = 0
     private var oldTime = 0L
     private var myPlayer: CallbackMediaPlayerComponent? = null
+    private var factory: MediaPlayerFactory? = null
 
     private var timeChangedFuture: ScheduledFuture<*>? = null
 
@@ -47,12 +48,13 @@ class PlayerService : Disposable {
 
     private fun getPlayer(): CallbackMediaPlayerComponent {
         if (myPlayer == null) {
+            println("重新获取player")
             val options = mutableListOf("-I dummy", "--no-video")
             val format = RoomsService.instance.state.settings["format"].toString()
             RoomsService.instance.state.settings["${format}Options"]?.let {
                 options.addAll(it.split(" "))
             }
-            val factory = MediaPlayerFactory(options)
+            factory = MediaPlayerFactory(options)
             myPlayer = CallbackMediaPlayerComponent(
                 factory,
                 null,
@@ -81,8 +83,11 @@ class PlayerService : Disposable {
     }
 
     fun stopVlc() {
+        PLAYING_ROOM = RoomModel(-99, -99, -99)
         if (myPlayer?.mediaPlayer()?.status()?.isPlaying == true) {
-            myPlayer?.mediaPlayer()?.controls()?.stop()
+            myPlayer?.mediaPlayer()?.let {
+                it.submit { it.controls().stop() }
+            }
         }
         if (timeChangedFuture != null) {
             timeChangedFuture!!.cancel(true)
@@ -111,6 +116,8 @@ class PlayerService : Disposable {
         stopVlc()
         myPlayer?.release()
         myPlayer = null
+        factory?.release()
+        factory = null
     }
 
     override fun dispose() {
