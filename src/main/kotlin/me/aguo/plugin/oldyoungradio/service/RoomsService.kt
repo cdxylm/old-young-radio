@@ -19,6 +19,9 @@ class RoomsService : PersistentStateComponent<RoomsService.State> {
         var settings: MutableMap<String, String> = mutableMapOf(
             "vlcDirectory" to "",
             "format" to "",
+            "flvOptions" to "",
+            "tsOptions" to "",
+            "fmp4Options" to "",
         )
     )
 

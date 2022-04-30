@@ -34,15 +34,7 @@ class PlayerService : Disposable {
 
     private var timeNotChanged = 0
     private var oldTime = 0L
-    private val options = arrayOf("-I dummy", "--no-video")
-    private val factory = MediaPlayerFactory(*options)
-    private var myPlayer: CallbackMediaPlayerComponent? = CallbackMediaPlayerComponent(
-        factory,
-        null,
-        null,
-        false,
-        null,
-    )
+    private var myPlayer: CallbackMediaPlayerComponent? = null
 
     private var timeChangedFuture: ScheduledFuture<*>? = null
 
@@ -55,6 +47,13 @@ class PlayerService : Disposable {
 
     private fun getPlayer(): CallbackMediaPlayerComponent {
         if (myPlayer == null) {
+            val options = mutableListOf("-I dummy", "--no-video")
+            val format = RoomsService.instance.state.settings["format"].toString()
+            RoomsService.instance.state.settings["${format}Options"]?.let {
+                options.addAll(it.split(" "))
+            }
+            println(options)
+            val factory = MediaPlayerFactory(options)
             myPlayer = CallbackMediaPlayerComponent(
                 factory,
                 null,
@@ -72,17 +71,12 @@ class PlayerService : Disposable {
         timeChangedFuture = Executors.newSingleThreadScheduledExecutor().scheduleWithFixedDelay(
             { checkTimeChanged() }, 10_000, 500, TimeUnit.MILLISECONDS
         )
-        val extraOption: Array<String> = arrayOf()
-        when (RoomsService.instance.state.settings["format"].toString()) {
-            "flv" -> {}
-            "ts" -> {}
-            "fmp4" -> {}
-        }
+
         val urlIterator = urls.iterator()
         val player = instance.getPlayer().mediaPlayer()
         player.events()
             .addMediaPlayerEventListener(CustomMediaPlayerEventAdapter(urlIterator, room, timeNotChanged))
-        player.media().play(urlIterator.next(), *extraOption)
+        player.media().play(urlIterator.next())
         player.titles().setTitle(room.room_id)
         PLAYING_ROOM = room
     }
@@ -114,10 +108,14 @@ class PlayerService : Disposable {
         }
     }
 
+    fun initPlayer() {
+        stopVlc()
+        myPlayer?.release()
+        myPlayer = null
+    }
 
     override fun dispose() {
         stopVlc()
-        myPlayer?.mediaPlayer()?.release()
         myPlayer?.release()
         myPlayer = null
     }

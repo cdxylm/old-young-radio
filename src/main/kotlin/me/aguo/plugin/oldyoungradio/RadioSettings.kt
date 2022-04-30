@@ -7,13 +7,14 @@ import com.intellij.openapi.options.Configurable
 import com.intellij.openapi.ui.ComboBox
 import com.intellij.ui.components.JBCheckBox
 import com.intellij.ui.components.JBTextArea
+import com.intellij.ui.components.JBTextField
 import com.intellij.ui.components.textFieldWithBrowseButton
 import com.intellij.ui.layout.panel
 import me.aguo.plugin.oldyoungradio.notification.CustomNotifications
+import me.aguo.plugin.oldyoungradio.service.PlayerService
 import me.aguo.plugin.oldyoungradio.service.RoomsService
 import java.awt.event.ItemEvent
 import javax.swing.JComponent
-import javax.swing.JSpinner
 
 class RadioSettings : Configurable {
 
@@ -38,17 +39,15 @@ class RadioSettings : Configurable {
             false
         ),
     )
-    val pcr = JSpinner().apply {
-        value = 0
-        toolTipText = "PTS Delay(ms)"
+    private val extraOptions = JBTextField().apply {
+        toolTipText = "Some extra options"
     }
     private val formats = arrayOf("flv", "ts", "fmp4")
 
     //TODO("增加自定义额外选项参数")
     val formatComboBox = ComboBox(formats).apply {
-        selectedItem = "flv"
         addItemListener { p0 ->
-            pcr.isVisible = p0?.item == "TODO"
+            extraOptions.text = roomsService.state.settings["${p0.item}Options"]
         }
     }
 
@@ -76,9 +75,10 @@ class RadioSettings : Configurable {
             }
             row("Stream format:") {
                 formatComboBox().focused()
-                    .comment("Flv or ts format is recommended. <a href='https://plugins.jetbrains.com/plugin/18850-old-young-radio/faq'>FAQ</a>")
-                cell(isFullWidth = false) {
-                    pcr().visible(false)
+                    .comment("Flv or ts format is recommended. About format and options: <a href='https://plugins.jetbrains.com/plugin/18850-old-young-radio/faq'>FAQ</a>")
+                cell {
+                    label("options:")
+                    extraOptions()
                 }
             }
             row("Recent MRLs:") {
@@ -94,18 +94,24 @@ class RadioSettings : Configurable {
     override fun isModified(): Boolean {
         val path = roomsService.state.settings["vlcDirectory"].toString()
         val format = roomsService.state.settings["format"].toString()
-        return path != pathChooser.text || format != formatComboBox.selectedItem
+        val formatOptions = roomsService.state.settings["${format}Options"].toString()
+        return path != pathChooser.text || format != formatComboBox.selectedItem || formatOptions != extraOptions.text
     }
 
     override fun apply() {
         val old = roomsService.state.settings["vlcDirectory"].toString()
         val new = pathChooser.text
         roomsService.state.settings["vlcDirectory"] = new
-        roomsService.state.settings["format"] = formatComboBox.selectedItem as String
+        val format = formatComboBox.selectedItem?.toString()
+        format?.let {
+            roomsService.state.settings["format"] = it
+            roomsService.state.settings["${it}Options"] = extraOptions.text
+        }
         if (old != new) {
             logger.warn("VLC directory changed: $old -> $new ")
             CustomNotifications.restartApp()
         }
+        PlayerService.instance.initPlayer()
     }
 
     override fun getDisplayName(): String {
@@ -114,9 +120,11 @@ class RadioSettings : Configurable {
 
 
     override fun reset() {
+        // setting 打开时会自动执行一次reset 这里涉及的各部件可以不用手动设置初始内容
         roomsService = RoomsService.instance
         pathChooser.text = roomsService.state.settings["vlcDirectory"].toString()
         formatComboBox.selectedItem = roomsService.state.settings["format"].toString()
+        extraOptions.text = roomsService.state.settings["${formatComboBox.selectedItem}Options"]
     }
 
 }
