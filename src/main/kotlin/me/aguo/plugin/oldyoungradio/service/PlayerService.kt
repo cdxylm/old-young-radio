@@ -52,7 +52,6 @@ class PlayerService : Disposable {
             RoomsService.instance.state.settings["${format}Options"]?.let {
                 options.addAll(it.split(" "))
             }
-            println(options)
             val factory = MediaPlayerFactory(options)
             myPlayer = CallbackMediaPlayerComponent(
                 factory,
