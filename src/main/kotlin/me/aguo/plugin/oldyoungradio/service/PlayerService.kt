@@ -48,7 +48,6 @@ class PlayerService : Disposable {
 
     private fun getPlayer(): CallbackMediaPlayerComponent {
         if (myPlayer == null) {
-            println("重新获取player")
             val options = mutableListOf("-I dummy", "--no-video")
             val format = RoomsService.instance.state.settings["format"].toString()
             RoomsService.instance.state.settings["${format}Options"]?.let {
