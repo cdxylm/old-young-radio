@@ -14,9 +14,11 @@ English:
 ### Added
 English:
 - [x] Added notification of network connection failure.
+- [x] You can add some extra options to the player in settings.
 
 中文
 - [x] 增加网络连接失败的通知提醒。
+- [x] 现在你可以在设置里传递一些参数给播放器。
 ## [0.0.4]
 ### Added
 English:
