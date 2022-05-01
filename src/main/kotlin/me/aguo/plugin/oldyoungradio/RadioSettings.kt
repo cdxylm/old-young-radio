@@ -112,6 +112,7 @@ class RadioSettings : Configurable {
             CustomNotifications.restartApp()
         }
         PlayerService.instance.initPlayer()
+        PlayerService.instance.cancelTimeChangedFuture()
     }
 
     override fun getDisplayName(): String {

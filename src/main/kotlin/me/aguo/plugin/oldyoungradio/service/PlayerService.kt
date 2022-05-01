@@ -32,14 +32,17 @@ class PlayerService : Disposable {
         }
     }
 
-    private var timeNotChanged = 0
+    var timeNotChanged = 0
     private var oldTime = 0L
-    private var myPlayer: CallbackMediaPlayerComponent? = null
+    var newTime = 0L
+    var myPlayer: CallbackMediaPlayerComponent? = null
     private var factory: MediaPlayerFactory? = null
 
     private var timeChangedFuture: ScheduledFuture<*>? = null
     var readyPlayNext = true
-
+    var urlIterator: Iterator<String> = listOf("").iterator()
+    var room: RoomModel = RoomModel(-99, -99, -99)
+    var stopping = false
 
     companion object {
         val instance by lazy {
@@ -62,55 +65,76 @@ class PlayerService : Disposable {
                 false,
                 null,
             )
+            myPlayer?.mediaPlayer()?.events()?.addMediaPlayerEventListener(CustomMediaPlayerEventAdapter())
         }
         return myPlayer as CallbackMediaPlayerComponent
     }
 
 
     fun playVlc(urls: List<String>, room: RoomModel) {
-        stopVlc()
-        timeChangedFuture = Executors.newSingleThreadScheduledExecutor().scheduleWithFixedDelay(
-            { checkTimeChanged() }, 10_000, 500, TimeUnit.MILLISECONDS
-        )
-
-        val urlIterator = urls.iterator()
+        /*如果不调用，player可能不会进入stopped状态，事件监听器就会重复。
+         调用control api ->stop 事件监听器有时会收到两次stopped事件，不知为啥。
+         */
+        urlIterator = urls.iterator()
+        instance.room = room
         val player = instance.getPlayer().mediaPlayer()
-        player.events()
-            .addMediaPlayerEventListener(CustomMediaPlayerEventAdapter(urlIterator, room, timeNotChanged))
+        if (player.status().isPlaying) {
+            stopVlc()
+            Thread.sleep(50)
+        }
         player.media().play(urlIterator.next())
-        player.titles().setTitle(room.room_id)
-        PLAYING_ROOM = room
+        timeChangedFuture = Executors.newSingleThreadScheduledExecutor().scheduleWithFixedDelay(
+            { checkTimeChanged() }, 1_0000, 500, TimeUnit.MILLISECONDS
+        )
+        logger.warn("timeChangedFuture started")
     }
 
     fun stopVlc() {
         PLAYING_ROOM = RoomModel(-99, -99, -99)
+        stopping = true
         if (myPlayer?.mediaPlayer()?.status()?.isPlaying == true) {
             myPlayer?.mediaPlayer()?.let {
                 it.submit { it.controls().stop() }
             }
         }
-        if (timeChangedFuture != null) {
-            timeChangedFuture!!.cancel(true)
-            timeChangedFuture = null
-            logger.warn("timeChangedFuture cancelled")
-        }
     }
 
     private fun checkTimeChanged() {
-        myPlayer?.let {
-            val newTime = it.mediaPlayer().status().time()
-            if (oldTime == newTime) {
-                timeNotChanged += 1
-            } else {
-                timeNotChanged = 0
-            }
-            if (timeNotChanged > 30) {
-                logger.warn("The newTime hasn't changed for a long time, try to stopVlc.")
-                readyPlayNext = false
+        if (oldTime == newTime) {
+            timeNotChanged += 1
+        } else {
+            timeNotChanged = 0
+        }
+        if (timeNotChanged > 30) {
+            logger.warn("The newTime hasn't changed for a long time, try to stopVlc.")
+            /*
+            此时libvlc实例已经不能进行play、stop之类的操作，所以
+            将定时任务取消，同时把readyPlayNext设置为false，以阻止实例进行play的操作，避免ui冻结
+            如果用户没有在断网后到程序监测到该问题这段时间里没有主动点击stop按钮，
+            再发出一个stop操作,确保该实例在网络恢复后能够收到一个stopped的事件
+            */
+            cancelTimeChangedFuture(true)
+            if (!stopping) {
                 stopVlc()
-                timeNotChanged = 0
             }
-            oldTime = newTime
+            if (myPlayer?.mediaPlayer()?.status()?.state()?.intValue() != 3) {
+                readyPlayNext = true
+            }
+
+        }
+        oldTime = newTime
+
+    }
+
+    fun cancelTimeChangedFuture(error: Boolean = false) {
+        if (error) {
+            readyPlayNext = false
+        }
+        if (timeChangedFuture != null) {
+            timeChangedFuture!!.cancel(true)
+            timeChangedFuture = null
+            timeNotChanged = 0
+            logger.warn("timeChangedFuture cancelled")
         }
     }
 

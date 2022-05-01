@@ -2,11 +2,15 @@
 
 package me.aguo.plugin.oldyoungradio.notification
 
+import com.intellij.icons.AllIcons
 import com.intellij.notification.Notification
 import com.intellij.notification.NotificationType
 import com.intellij.notification.Notifications
+import com.intellij.openapi.actionSystem.AnAction
+import com.intellij.openapi.actionSystem.AnActionEvent
 import me.aguo.plugin.oldyoungradio.action.ConfigureStreamFormat
 import me.aguo.plugin.oldyoungradio.action.ConfigureVlcDir
+import me.aguo.plugin.oldyoungradio.service.PlayerService
 
 object CustomNotifications {
 
@@ -79,6 +83,23 @@ object CustomNotifications {
             "由于播放器未能正常停止播放，需要等待播放器进入\"Stopped\"状态。" +
                     "【 可能的原因是正在播放时网络连接意外断开，请在网络恢复后等待播放器恢复正常，或在网络恢复后重启应用 】",
             NotificationType.WARNING
+        )
+        notification.addAction(object : AnAction("确认网络没有断开过", "", AllIcons.General.BalloonWarning) {
+            override fun actionPerformed(e: AnActionEvent) {
+                PlayerService.instance.myPlayer = null
+                PlayerService.instance.readyPlayNext = true
+            }
+
+        })
+        Notifications.Bus.notify(notification)
+    }
+
+    fun playerReady() {
+        val notification = Notification(
+            "Old Young Radio",
+            "播放器恢复正常",
+            "播放器从异常状态中恢复了，现在可以进行下一次播放。",
+            NotificationType.INFORMATION
         )
         Notifications.Bus.notify(notification)
     }
