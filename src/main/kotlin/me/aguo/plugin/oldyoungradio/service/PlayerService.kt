@@ -38,6 +38,7 @@ class PlayerService : Disposable {
     private var factory: MediaPlayerFactory? = null
 
     private var timeChangedFuture: ScheduledFuture<*>? = null
+    var readyPlayNext = true
 
 
     companion object {
@@ -91,6 +92,7 @@ class PlayerService : Disposable {
         if (timeChangedFuture != null) {
             timeChangedFuture!!.cancel(true)
             timeChangedFuture = null
+            logger.warn("timeChangedFuture cancelled")
         }
     }
 
@@ -102,8 +104,9 @@ class PlayerService : Disposable {
             } else {
                 timeNotChanged = 0
             }
-            if (timeNotChanged > 60) {
+            if (timeNotChanged > 30) {
                 logger.warn("The newTime hasn't changed for a long time, try to stopVlc.")
+                readyPlayNext = false
                 stopVlc()
                 timeNotChanged = 0
             }

@@ -62,6 +62,10 @@ class CustomMouseAdapter(private val tabId: Int) : MouseAdapter() {
             BiliBiliApi.getSteamUrls(roomId)?.let {
                 CURRENT_STREAM_URLS = it
                 if (CURRENT_STREAM_URLS.isNotEmpty()) {
+                    if (!PlayerService.instance.readyPlayNext){
+                        CustomNotifications.playerNotReady()
+                        return
+                    }
                     PlayerService.instance.playVlc(CURRENT_STREAM_URLS, list.selectedValue as RoomModel)
                 } else {
                     CustomNotifications.noUrl()

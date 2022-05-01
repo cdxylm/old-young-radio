@@ -71,4 +71,15 @@ object CustomNotifications {
         )
         Notifications.Bus.notify(notification)
     }
+
+    fun playerNotReady() {
+        val notification = Notification(
+            "Old Young Radio",
+            "播放器尚未准备完成",
+            "由于播放器未能正常停止播放，需要等待播放器进入\"Stopped\"状态。" +
+                    "【 可能的原因是正在播放时网络连接意外断开，请在网络恢复后等待播放器恢复正常，或在网络恢复后重启应用 】",
+            NotificationType.WARNING
+        )
+        Notifications.Bus.notify(notification)
+    }
 }

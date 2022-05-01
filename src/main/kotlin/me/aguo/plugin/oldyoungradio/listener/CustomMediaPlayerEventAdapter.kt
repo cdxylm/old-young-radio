@@ -3,6 +3,7 @@ package me.aguo.plugin.oldyoungradio.listener
 import me.aguo.plugin.oldyoungradio.PLAYING_ROOM
 import me.aguo.plugin.oldyoungradio.model.RoomModel
 import me.aguo.plugin.oldyoungradio.notification.CustomNotifications
+import me.aguo.plugin.oldyoungradio.service.PlayerService
 import uk.co.caprica.vlcj.player.base.MediaPlayer
 import uk.co.caprica.vlcj.player.base.MediaPlayerEventAdapter
 
@@ -33,6 +34,9 @@ class CustomMediaPlayerEventAdapter(
     override fun stopped(mediaPlayer: MediaPlayer?) {
         mediaPlayer?.events()?.removeMediaPlayerEventListener(this)
         PLAYING_ROOM = RoomModel(-99, -99, -99)
+        if (!PlayerService.instance.readyPlayNext) {
+            PlayerService.instance.readyPlayNext = true
+        }
     }
 
     override fun finished(mediaPlayer: MediaPlayer?) {
