@@ -148,6 +148,8 @@ object BiliBiliApi {
     }
 
     fun getSteamUrls(room_id: Int): List<String>? {
+        // TODO:鉴于v2版本flv格式的流需要添加额外参数播放，如有需要添加v1版本的api获取flv格式流
+        // https://api.live.bilibili.com/room/v1/Room/playUrl?cid=545068&qn=10000&platform=web
         val client: HttpClient = HttpClient.newBuilder().build()
         val requestBuilder = HttpRequest.newBuilder()
         val request = requestBuilder

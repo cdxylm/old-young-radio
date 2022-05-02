@@ -17,7 +17,7 @@ class CustomMediaPlayerEventAdapter :
         val iterator = PlayerService.instance.urlIterator
         if (iterator.hasNext()) {
             mediaPlayer?.submit {
-                mediaPlayer.media().play(iterator.next())
+                mediaPlayer.media().play(iterator.next(), *PlayerService.instance.tailOptions)
                 PlayerService.instance.timeNotChanged = 0
                 PLAYING_ROOM = PlayerService.instance.room
             }

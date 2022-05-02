@@ -43,6 +43,7 @@ class PlayerService : Disposable {
     var urlIterator: Iterator<String> = listOf("").iterator()
     var room: RoomModel = RoomModel(-99, -99, -99)
     var stopping = false
+    var tailOptions = arrayOfNulls<String>(10)
 
     companion object {
         val instance by lazy {
@@ -55,7 +56,12 @@ class PlayerService : Disposable {
             val options = mutableListOf("-I dummy", "--no-video")
             val format = RoomsService.instance.state.settings["format"].toString()
             RoomsService.instance.state.settings["${format}Options"]?.let {
-                options.addAll(it.split(" "))
+                options.addAll(it.split(" ").filter { option -> option.startsWith("--") })
+            }
+            RoomsService.instance.state.settings["${format}Options"]?.let {
+                it.split(" ").filter { option -> !option.startsWith("--") }.forEachIndexed { i, v ->
+                    tailOptions[i] = v
+                }
             }
             factory = MediaPlayerFactory(options)
             myPlayer = CallbackMediaPlayerComponent(
@@ -82,7 +88,7 @@ class PlayerService : Disposable {
             stopVlc()
             Thread.sleep(50)
         }
-        player.media().play(urlIterator.next())
+        player.media().play(urlIterator.next(), *tailOptions)
         timeChangedFuture = Executors.newSingleThreadScheduledExecutor().scheduleWithFixedDelay(
             { checkTimeChanged() }, 1_0000, 500, TimeUnit.MILLISECONDS
         )
