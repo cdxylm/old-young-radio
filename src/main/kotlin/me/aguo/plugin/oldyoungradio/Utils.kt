@@ -7,16 +7,17 @@ import com.squareup.moshi.Moshi
 import me.aguo.plugin.oldyoungradio.model.RoomModel
 import me.aguo.plugin.oldyoungradio.model.StreamUrlResponseV2
 import me.aguo.plugin.oldyoungradio.service.RoomsService
+import java.net.URI
 
 
-fun checkRoomExist(state: RoomsService.State, uid: Int): Boolean {
+fun checkRoomExist(state: RoomsService.State, uid: Long): Boolean {
     val tempList = state.roomList.filter {
         it.indexOf("uid=${uid}") != -1
     }
     return tempList.isNotEmpty()
 }
 
-fun getAllIds(type: String): List<Int?> {
+fun getAllIds(type: String): List<Any> {
     if (type !in listOf("room_id", "short_id", "uid")) {
         throw Exception("id type must be \"room_id\" or \"short_id\",\"uid\"")
     }
@@ -77,4 +78,11 @@ fun notifyError(project: Project?, content: String?) {
     NotificationGroupManager.getInstance().getNotificationGroup("Old Young Radio")
         .createNotification("添加房间错误", content!!, NotificationType.ERROR)
         .notify(project)
+}
+
+
+fun getHost(url: String): List<String> {
+    val uri = URI(url)
+    val domain: String = uri.host
+    return listOf(url, if (domain.startsWith("www.")) domain.substring(4) else domain)
 }
