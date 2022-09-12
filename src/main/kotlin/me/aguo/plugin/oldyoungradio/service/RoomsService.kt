@@ -27,7 +27,6 @@ class RoomsService : PersistentStateComponent<RoomsService.State> {
 
     companion object {
 
-        @Suppress("DEPRECATION")
         val instance: RoomsService
             get() = ServiceManager.getService(RoomsService::class.java)
 
