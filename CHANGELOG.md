@@ -3,6 +3,15 @@
 # old-young-radio Changelog
 
 ## [Unreleased]
+## [0.0.6]
+### Fixed
+English:
+- [x] Added default configuration about http-host to fix playback errors.
+- [x] Modified variables and parameter types, and fixed the problem of getting room information.
+
+中文:
+- [x] 增加关于http-host的默认配置，修复播放出错的问题。
+- [x] 修改变量及参数类型，修复获取直播间信息错误的问题。
 ## [0.0.5]
 ### Fixed
 English:
