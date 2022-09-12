@@ -6,6 +6,7 @@ import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.util.Disposer
 import com.sun.jna.NativeLibrary
 import me.aguo.plugin.oldyoungradio.PLAYING_ROOM
+import me.aguo.plugin.oldyoungradio.getHost
 import me.aguo.plugin.oldyoungradio.listener.CustomMediaPlayerEventAdapter
 import me.aguo.plugin.oldyoungradio.model.RoomModel
 import me.aguo.plugin.oldyoungradio.notification.CustomNotifications
@@ -43,7 +44,7 @@ class PlayerService : Disposable {
     var urlIterator: Iterator<String> = listOf("").iterator()
     var room: RoomModel = RoomModel(-99, -99, -99)
     var stopping = false
-    var tailOptions = arrayOfNulls<String>(10)
+    var tailOptions = mutableListOf<String>()
 
     companion object {
         val instance by lazy {
@@ -59,9 +60,7 @@ class PlayerService : Disposable {
                 options.addAll(it.split(" ").filter { option -> option.startsWith("--") })
             }
             RoomsService.instance.state.settings["${format}Options"]?.let {
-                it.split(" ").filter { option -> !option.startsWith("--") }.forEachIndexed { i, v ->
-                    tailOptions[i] = v
-                }
+                tailOptions.addAll(it.split(" ").filter { option -> !option.startsWith("--") })
             }
             factory = MediaPlayerFactory(options)
             myPlayer = CallbackMediaPlayerComponent(
@@ -88,7 +87,11 @@ class PlayerService : Disposable {
             stopVlc()
             Thread.sleep(50)
         }
-        player.media().play(urlIterator.next(), *tailOptions)
+        val currentUrl = getHost(urlIterator.next())
+        tailOptions.replaceAll {
+            if (it.startsWith(":http-host")) ":http-host='https://${currentUrl[1]}'" else it
+        }
+        player.media().play(currentUrl[0], *tailOptions.toTypedArray())
         timeChangedFuture = Executors.newSingleThreadScheduledExecutor().scheduleWithFixedDelay(
             { checkTimeChanged() }, 1_0000, 500, TimeUnit.MILLISECONDS
         )

@@ -1,6 +1,7 @@
 package me.aguo.plugin.oldyoungradio.listener
 
 import me.aguo.plugin.oldyoungradio.PLAYING_ROOM
+import me.aguo.plugin.oldyoungradio.getHost
 import me.aguo.plugin.oldyoungradio.model.RoomModel
 import me.aguo.plugin.oldyoungradio.notification.CustomNotifications
 import me.aguo.plugin.oldyoungradio.service.PlayerService
@@ -17,7 +18,11 @@ class CustomMediaPlayerEventAdapter :
         val iterator = PlayerService.instance.urlIterator
         if (iterator.hasNext()) {
             mediaPlayer?.submit {
-                mediaPlayer.media().play(iterator.next(), *PlayerService.instance.tailOptions)
+                val currentUrl = getHost(iterator.next())
+                PlayerService.instance.tailOptions.replaceAll {
+                    if (it.startsWith(":http-host")) ":http-host='https://${currentUrl[1]}'" else it
+                }
+                mediaPlayer.media().play(currentUrl[0], *PlayerService.instance.tailOptions.toTypedArray())
                 PlayerService.instance.timeNotChanged = 0
                 PLAYING_ROOM = PlayerService.instance.room
             }
