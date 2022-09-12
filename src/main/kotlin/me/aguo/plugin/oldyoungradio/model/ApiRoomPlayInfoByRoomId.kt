@@ -25,7 +25,7 @@ data class Codec(
 data class Data(
     val room_id: Int,
     val short_id: Int,
-    val uid: Int,
+    val uid: Long,  //B站更新出现16位UID
     val is_hidden: Boolean,
     val is_locked: Boolean,
     val is_portrait: Boolean,

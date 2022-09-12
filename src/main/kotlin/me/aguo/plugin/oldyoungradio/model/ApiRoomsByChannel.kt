@@ -24,7 +24,7 @@ data class RBCRData(
 data class RBCRRoomInfo(
 
     val roomid: Int,
-    val uid: Int,
+    val uid: Long,  // B站新的UID出现了十六位数字，前缀3461562+随机9位UID，且左右1000连号。改用Long类型
     val title: String,
     val uname: String,
     val online: Int,

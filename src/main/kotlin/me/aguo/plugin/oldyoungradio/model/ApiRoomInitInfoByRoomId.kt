@@ -16,7 +16,7 @@ data class RoomInitInfoResponse(
 data class RoomInitInfo(
     val room_id: Int,
     val short_id: Int,
-    val uid: Int,
+    val uid: Long,  //B站更新出现16位UID
 )
 
 
@@ -33,7 +33,7 @@ data class StatusByUidsResponse(
 data class StatusOfRoom(
     val room_id: Int,
     val short_id: Int,
-    val uid: Int,
+    val uid: Long,  //B站更新出现16位UID
     val title: String,
     val online: Int,
     val live_status: Int,

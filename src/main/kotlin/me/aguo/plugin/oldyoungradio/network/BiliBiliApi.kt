@@ -58,7 +58,7 @@ object BiliBiliApi {
         return null
     }
 
-    fun getRoomInfoByMid(mid: Int): RoomModel? {
+    fun getRoomInfoByMid(mid: Long): RoomModel? {
         val client: HttpClient = HttpClient.newBuilder().build()
         val request = requestBuilder
             .uri(URI.create("https://api.bilibili.com/x/space/acc/info?mid=${mid}"))
@@ -81,9 +81,6 @@ object BiliBiliApi {
                             room_id = liveRoomInfo.groupValues[4].toInt(),
                             short_id = 0,
                             uid = mid,
-//                        uname = liveRoom.groupValues[2],
-//                        title = liveRoomInfo.groupValues[3],
-//                        live_status = liveRoomInfo.groupValues[2].toInt()
                         )
                     }
                 }
@@ -178,7 +175,7 @@ object BiliBiliApi {
         return null
     }
 
-    fun getFollowings(mid: Int): List<Int>? {
+    fun getFollowings(mid: Long): List<Long>? {
         val client: HttpClient = HttpClient.newBuilder().build()
         val request = requestBuilder
             .uri(URI.create("https://api.bilibili.com/x/relation/followings?vmid=${mid}&pn=1&ps=50&order=desc&order_type=attention"))

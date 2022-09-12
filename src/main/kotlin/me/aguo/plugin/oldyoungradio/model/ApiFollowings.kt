@@ -21,7 +21,7 @@ data class FollowingsData(
 @JsonClass(generateAdapter = true)
 data class FollowingList(
 
-    val mid: Int,
+    val mid: Long,  //B站更新出现16位UID
     val attribute: Int,
     val mtime: Int,
     val tag: List<String>,
