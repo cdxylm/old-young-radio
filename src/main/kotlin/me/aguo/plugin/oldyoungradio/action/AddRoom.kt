@@ -22,7 +22,7 @@ class AddRoom : AnAction("Add Room", "Add a new room to list", AllIcons.General.
             val followingsPattern = Pattern.followings.toRegex()
             val result = followingsPattern.find(inputString)
             if (result != null) {
-                val followings = getFollowings(result.groupValues[1].toInt())
+                val followings = getFollowings(result.groupValues[1].toLong())
                 followings?.map {
                     val room = BiliBiliApi.getRoomInfoByMid(it)
                     room?.let { r -> rooms.add(r) }
